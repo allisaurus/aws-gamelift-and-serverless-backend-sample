@@ -20,10 +20,14 @@ Function Get-Status-Of-Stack {
 	aws cloudformation describe-stacks --region $Config.Settings.AccountSettings.Region --stack-name $name --query Stacks[].StackStatus --output text 2> Out-Null
 }
 
+# ensure below calls and gamelift.yaml template adhere to build and fleet settings in:
+#  https://github.com/o3de/o3de-multiplayersample/blob/development/MPSGameLift/Documentation/GameLift.md#upload-the-build-to-gamelift
+
 # Deploy the build to GameLift (Expecting that it was built from Unity already)
-Write-Host "Deploying build (Expecting it is prebuilt in LinuxServerBuild folder)"
+Write-Host "Deploying build (Expecting it is prebuilt MPS)"
+$buildRoot = "C:\sandbox\mps\GameLiftPackageWindows3"
 $buildversion = Get-Date -UFormat "%y-%m-%d.%H%M%S"
-aws gamelift upload-build --operating-system AMAZON_LINUX_2 --build-root ../LinuxServerBuild --name "Unity Game Server Example" --build-version $buildversion --region $Config.Settings.AccountSettings.Region
+aws gamelift upload-build --operating-system WINDOWS_2016 --build-root $buildRoot --name "MultiplayerSampleTest" --build-version $buildversion --region $Config.Settings.AccountSettings.Region
 
 # Get the build version for fleet deployment
 $query = """Builds[?Version==``$buildversion``].BuildId"""

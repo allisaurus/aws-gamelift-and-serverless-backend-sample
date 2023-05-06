@@ -38,7 +38,7 @@ Resources:
             }],
             "teams": [{
                 "name": "oneteam",
-                "maxPlayers": 5,
+                "maxPlayers": 10,
                 "minPlayers": 1
             }],
             "rules": [{
@@ -112,8 +112,8 @@ Resources:
   Fleet: 
     Type: AWS::GameLift::Fleet
     Properties: 
-      Name: "ExampleLinuxFleet"
-      Description: "An Example Linux Fleet"
+      Name: "ExampleMpsFleet"
+      Description: "An Example MPS Fleet on WINDOWS_2016"
       # We run a secondary location for this Fleet and do latency-based matchmaking between them
       Locations:
         - Location: !Ref SecondaryLocation 
@@ -126,12 +126,9 @@ Resources:
         MaxConcurrentGameSessionActivations: 1
         ServerProcesses:
           - ConcurrentExecutions: 1
-            LaunchPath: /local/game/GameLiftExampleServer.x86_64
-            Parameters: -logFile /local/game/logs/myserver1935.log -port 1935
-          - ConcurrentExecutions: 1
-            LaunchPath: /local/game/GameLiftExampleServer.x86_64
-            Parameters: -logFile /local/game/logs/myserver7777.log -port 7777
-      EC2InstanceType: "c5.large"
+            LaunchPath: C:\game\MultiplayerSample.ServerLauncher.exe
+            Parameters: --rhi=null -sys_PakPriority=2 -NullRenderer -sv_terminateOnPlayerExit=true -bg_ConnectToAssetProcessor=0 --sv_gameLiftEnabled=true --sv_dedicated_host_onstartup=false --console-command-file=launch_server.cfg
+      EC2InstanceType: "c5.2xlarge"
       #Create TLS certificate for optional encrypted client-server traffic (not implemented in the example server)
       CertificateConfiguration:
         CertificateType: GENERATED
@@ -143,15 +140,10 @@ Resources:
       #Allow TCP inbound access to our game servers
       EC2InboundPermissions: 
         - 
-          FromPort: "1935"
-          ToPort: "1935"
+          FromPort: "33450"
+          ToPort: "34449"
           IpRange: "0.0.0.0/0"
-          Protocol: "TCP"
-        - 
-          FromPort: "7777"
-          ToPort: "7777"
-          IpRange: "0.0.0.0/0"
-          Protocol: "TCP"
+          Protocol: "UDP"
 
   # Alias that references the fleet
   # This is not required as we're registering to a Queue but just here for example

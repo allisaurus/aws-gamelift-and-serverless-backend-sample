@@ -7,6 +7,6 @@
 	</AccountSettings>
 	<S3Settings>
 		<!--A Unique name for the bucket used for backend deployments-->
-		<DeploymentBucketName>YOUR-UNIQUE-BUCKET-NAME-HERE</DeploymentBucketName>
+		<DeploymentBucketName>may-2023-mps-demo-deployment-iad</DeploymentBucketName>
 	</S3Settings>
 </Settings>
